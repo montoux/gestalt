@@ -20,18 +20,30 @@ Use gestalt to define different environments with different configuration (devel
 ## Public API
 
 ### `with-cfg-store`
-temporarily binds the cfg store to the specified atom and evaluates body. Useful for testing.
+ * `(with-cfg-store store & body)`
+
+temporarily binds the cfg store to atom `store` and evaluates `body`. Useful for testing.
 
 ### `reset-gestalt!`
-initialises the configuration system by reading the configuration file. If the system is not initialised before a call to `get` or `environment`, this function is called automatically.
+ * `(reset-gestalt!)`
+ * `(reset-gestalt! file-or-reader)`
+ * `(reset-gestalt! file-or-reader env)`
+
+Initialises the configuration system by reading the configuration file. If the system is not initialised before a call to `get` or `environment`, this function is called automatically.
 
 ### `defined?`
-test if a key is defined in the configuration
+ * `(defined? k)`
+
+test if key `k` is defined in the configuration
 
 ### `get`
-gets a config value for the current environment.
+ * `(get k & ks)`
+
+gets a config value for the current environment, e.g `(gestalt/get :db :host)`.
 
 ### `environment`
+ * `(environment)`
+
 returns the environment the application is running in.
 
 ## Configuration file
@@ -66,8 +78,8 @@ but this can be overridden with the java property
 `gestalt.file`, or a file can be specified in the call to `reset-gestalt!`.
 
 *NB: the location of the config file is deliberately kept outside of
-version control and the classpath, since we don't want to store
-passwords in version control - or jar/war files.*
+version control and the classpath, since we don't encourage storing
+passwords in version control, for security reasons.*
 
 Specify the environment to run in with the java property
 `gestalt.environment`. The default is `development`. Java property strings specifying an environment are translated to keywords. So "development" refers to the environment `:development` in the configuration file. , The environment can also be specified in the call to `reset-gestalt!`.
