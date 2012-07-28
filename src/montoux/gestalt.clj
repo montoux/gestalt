@@ -76,7 +76,6 @@ in the configuration file your environment keys should be keywords, e.g. `:devel
   "Returns the configuration for the specified environment"
   [env file-or-reader]
   (let [form (read-config file-or-reader)]
-    (println form)
     (when-not (map? form)
       (throw (RuntimeException.
               (if (instance? java.io.File file-or-reader)
