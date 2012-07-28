@@ -4,6 +4,24 @@ Gestalt is a small library that does one thing: it moves configuration parameter
 
 Use gestalt to define different environments with different configuration (development, test, staging, production, etc).
 
+## Installation
+Gestalt is available as a .jar file on [Clojars.org](https://clojars.org/montoux/gestalt). Include Gestalt in your project using leiningen or maven.
+
+### Leiningen
+Add this to your `:dependencies` in `project.clj`:
+
+    [montoux/gestalt "1.0.0"]
+
+### Maven
+Add this to your maven pom:
+
+    <dependency>
+      <groupId>montoux</groupId>
+      <artifactId>gestalt</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    
+
 ## Usage
 
     (ns my-app
