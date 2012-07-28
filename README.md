@@ -34,6 +34,18 @@ Add this to your maven pom:
     (gestalt/environment)
     ;; => :development
 
+## Differences with other libraries
+
+A similar open source Clojure configuration tool is [Milieu](https://github.com/drakerlabs/milieu). Though similar in functionality, there are some differences:
+
+ * Gestalt uses standard Clojure for its configuration file syntax; Milieu uses YAML
+ * Gestalt encourages you to keep your configuration files outside of your source tree, to avoid accidentally leaking sensitive information (such as database usernames and passwords) by including your configuration file in version control.
+ * Gestalt throws an exception when the configuration file could not be read, or when you refer to a key that is not set in the configuration file. Milieu logs a warning.
+ * Gestalt has less dependencies and is simpler; Milieu has a bit more functionality, such as overriding configuration values on the commandline.
+
+Gestalt was developed to provide a simple configuration tool that fails early in case there is an error. Milieu is more forgiving. Use the tool that suits your needs. :)
+
+
 
 ## Public API
 
