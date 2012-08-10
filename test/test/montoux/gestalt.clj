@@ -7,22 +7,39 @@
   (:import java.io.StringReader))
 
 
-(deftest test-with-cfg-store
-  (let [s  (atom {:cfg {::foo 42} :env :test-env})
-        s' (atom {:cfg {::foo 3.14} :env :another-env})]
-    (gestalt/with-cfg-store s
-      (is (= 42 (gestalt/get ::foo)))
-      (is (= :test-env (gestalt/environment))))
-    (gestalt/with-cfg-store s'
-      (is (= 3.14 (gestalt/get ::foo)))
-      (is (= :another-env (gestalt/environment))))))
+(deftest test-with-config-with-environment
+  (gestalt/with-config {:test-env {::foo 42}
+                        :another-env {::foo 3.14}}
+    (gestalt/with-environment :test-env
+      (is (= 42 (gestalt/get ::foo))))
+    (gestalt/with-environment :another-env
+      (is (= 3.14 (gestalt/get ::foo))))))
+
+(deftest test-with-config-temporary
+  (gestalt/with-environment :test
+    (gestalt/with-config {:test {:foo 42 :bar :baz}}
+      (is (= 42 (gestalt/get :foo)))
+      (gestalt/with-config {:test {:foo 3.14 :bar :x}}
+        (is (= 3.14 (gestalt/get :foo))))
+      (is (= 42 (gestalt/get :foo))))))
+
+(deftest test-with-config-and-reset
+  (gestalt/reset-gestalt!
+   (StringReader. "{:test {:foo 1 :bar 2} :test2 {:foo 10 :bar 20}}") :test2)
+  (is (= 10 (gestalt/get :foo)))
+  (gestalt/with-scoped-config
+    (gestalt/reset-gestalt!
+     (StringReader. "{:test {:foo 1 :bar 2} :test2 {:foo 42 :bar 20}}") :test2)
+    (is (= 42 (gestalt/get :foo)))
+    (gestalt/with-environment :test
+      (is (= 1 (gestalt/get :foo)))))
+  (is (= 10 (gestalt/get :foo))))
 
 (deftest test-reset-gestalt!
-  (let [s (atom nil)]
-    (gestalt/with-cfg-store s
-      (gestalt/reset-gestalt!
-       (StringReader. "{:test {:foo 1 :bar 2} :test2 {:foo 10 :bar 20}}") :test)
-      (is (= 1 (gestalt/get :foo))))))
+  (gestalt/with-scoped-config
+    (gestalt/reset-gestalt!
+     (StringReader. "{:test {:foo 1 :bar 2} :test2 {:foo 10 :bar 20}}") :test)
+    (is (= 1 (gestalt/get :foo)))))
 
 (defn- tmpfile [contents]
   (let [f (doto (java.io.File/createTempFile "cfg-test" ".clj") .deleteOnExit)]
@@ -43,14 +60,12 @@
           (System/clearProperty ~k)
           (System/setProperty ~k old-value#))))))
 
-
 (deftest test-automatic-reset-gestalt
   (let [s (atom nil)
         f (tmpfile "{:test {:foo 1 :bar 2} :test2 {:foo 10 :bar 20}}")]
     (try
-      (gestalt/with-cfg-store s
+      (gestalt/with-scoped-config
         (with-system-property gestalt/GESTALT_CONFIG_FILE_PROP (str f)
-          
           (with-system-property gestalt/GESTALT_ENVIRONMENT_PROP "test2"
             (is (= 10 (gestalt/get :foo)) "initialised on first use")
             (is (= :test2 (gestalt/environment))))
@@ -63,14 +78,15 @@
        (jio/delete-file f)))))
 
 (deftest test-contains?
-  (gestalt/with-cfg-store (atom {:cfg {:foo 42} :env :test})
-    (is (gestalt/defined? :foo))
-    (is (not (gestalt/defined? :bar)))))
+  (gestalt/with-config {:test {:foo 42}}
+    (gestalt/with-environment :test
+      (is (gestalt/defined? :foo))
+      (is (not (gestalt/defined? :bar))))))
 
 (deftest test-get?
-  (gestalt/with-cfg-store (atom {:cfg {:foo 42
-                                      :a {:b {:c 1}}} :env :test})
-    (is (thrown? IllegalArgumentException (gestalt/get :bar)))
-    (is (thrown? IllegalArgumentException (gestalt/get nil)))
-    (is (= 42 (gestalt/get :foo)))
-    (is (= 1 (gestalt/get :a :b :c)))))
+  (gestalt/with-config {:test {:foo 42 :a {:b {:c 1}}}}
+    (gestalt/with-environment :test
+      (is (thrown? IllegalArgumentException (gestalt/get :bar)))
+      (is (thrown? IllegalArgumentException (gestalt/get nil)))
+      (is (= 42 (gestalt/get :foo)))
+      (is (= 1 (gestalt/get :a :b :c))))))
