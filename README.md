@@ -49,10 +49,20 @@ Gestalt was developed to provide a simple configuration tool that fails early in
 
 ## Public API
 
-### `with-cfg-store`
- * `(with-cfg-store store & body)`
+### `with-config`
+ * `(with-config cfg & body)`
 
-temporarily binds the cfg store to atom `store` and evaluates `body`. Useful for testing.
+temporarily binds configuration to the map `cfg` and evaluates `body`. Useful for testing.
+
+### `with-environment`
+ * `(with-environment env & body)`
+
+temporarily sets the environment to `env` and evaluates `body`. Useful for testing.
+
+### `with-scoped-config`
+ * `(with-scoped-config & body)`
+
+Creates a temporary scope for `reset-gestalt!` and evaluates `body`. Useful for testing.
 
 ### `reset-gestalt!`
  * `(reset-gestalt!)`
@@ -67,7 +77,7 @@ Initialises the configuration system by reading the configuration file. If the s
 test if key `k` is defined in the configuration
 
 ### `get`
- * `(get k & ks)`
+ * `(get & ks)`
 
 gets a config value for the current environment, e.g `(gestalt/get :db :host)`.
 
