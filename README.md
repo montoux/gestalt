@@ -10,7 +10,7 @@ Gestalt is available as a .jar file on [Clojars.org](https://clojars.org/montoux
 ### Leiningen
 Add this to your `:dependencies` in `project.clj`:
 
-    [montoux/gestalt "1.0.0"]
+    [montoux/gestalt "2.0.0"]
 
 ### Maven
 Add this to your maven pom:
@@ -18,7 +18,7 @@ Add this to your maven pom:
     <dependency>
       <groupId>montoux</groupId>
       <artifactId>gestalt</artifactId>
-      <version>1.0.0</version>
+      <version>2.0.0</version>
     </dependency>
     
 
