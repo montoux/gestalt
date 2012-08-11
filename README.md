@@ -129,6 +129,7 @@ first time `get` or `environment` are used.
 
 ## Change History
 
+ * __2012.08.11__ Introduced `with-environment`, `with-config` and `with-scoped-config`; removed `with-cfg-store`. Version 2.0.0.
  * __2012.07.28__ Released version 1.0.0, first public release
 
 ## Who?
