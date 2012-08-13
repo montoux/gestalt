@@ -61,8 +61,7 @@
           (System/setProperty ~k old-value#))))))
 
 (deftest test-automatic-reset-gestalt
-  (let [s (atom nil)
-        f (tmpfile "{:test {:foo 1 :bar 2} :test2 {:foo 10 :bar 20}}")]
+  (let [f (tmpfile "{:test {:foo 1 :bar 2} :test2 {:foo 10 :bar 20}}")]
     (try
       (gestalt/with-scoped-config
         (with-system-property gestalt/GESTALT_CONFIG_FILE_PROP (str f)

@@ -32,11 +32,11 @@ in the configuration file your environment keys should be keywords, e.g. `:devel
 ;; ----------------------------------------------------------------------------
 (def ^{:private true :dynamic true
        :doc "Stores the configuration"}
-  *cfg*)
+  *cfg* nil)
 
 (def ^{:private true :dynamic true
        :doc "Stores the environment"}
-  *env*)
+  *env* nil)
 
 
 ;; ----------------------------------------------------------------------------
