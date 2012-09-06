@@ -2,7 +2,8 @@
       :doc "Gestalt is a small library that does one thing: it moves configuration parameters such as database connection parameters or SSL keystore locations out of your Clojure code and into a configuration file that lives outside your source tree."}
   montoux.gestalt
   (:refer-clojure :exclude [get])
-  (:require [clojure.java.io :as jio]))
+  (:require [clojure.java.io :as jio]
+            [clojure.string :as string]))
 
 
 ;; ----------------------------------------------------------------------------
@@ -43,11 +44,18 @@ in the configuration file your environment keys should be keywords, e.g. `:devel
 ;; helper functions
 ;; ----------------------------------------------------------------------------
 
+(defn- get-config-file-name
+  "Returns the name of the config file, from the system property defined in
+  `GESTALT_CONFIG_FILE_PROP`, or the DEFAULT_CONFIG_FILE. `~` characters are
+  expanded to the user's home directory"
+  []
+  (let [s (or (System/getProperty GESTALT_CONFIG_FILE_PROP) DEFAULT_CONFIG_FILE)]
+    (string/replace-first s #"\~" (System/getProperty "user.home"))))
+
 (defn- get-config-file
   "Return a java.io.File object for the configuration file."
   []
-  (or (jio/file (System/getProperty GESTALT_CONFIG_FILE_PROP))
-      DEFAULT_CONFIG_FILE))
+  (or (jio/file (get-config-file-name))))
 
 
 (defn- get-environment
