@@ -14,3 +14,6 @@ tmp
 .lein-failures
 autodoc
 checkouts/*
+gestalt.iml
+gestalt.ipr
+gestalt.iws
