@@ -62,7 +62,8 @@ in the configuration file your environment keys should be keywords, e.g. `:devel
   "Returns the environment this application should run in. Defaults to
    :development."
   []
-  (keyword (or (System/getProperty GESTALT_ENVIRONMENT_PROP)
+  (keyword (or *env*
+              (System/getProperty GESTALT_ENVIRONMENT_PROP)
                DEFAULT_ENVIRONMENT)))
 
 (defn- read-config-file
